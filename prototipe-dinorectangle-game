@@ -1,0 +1,135 @@
+import pygame
+import random
+
+# Inicializar Pygame
+pygame.init()
+
+# Configuración de la pantalla
+WIDTH = 800
+HEIGHT = 400
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Juego de el Rectangulo Salto con Obstáculos y Monedas")
+
+# Colores
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+YELLOW = (255, 255, 0)
+
+# Jugador
+player_width = 40
+player_height = 60
+player_x = 50
+player_y = HEIGHT - player_height - 10
+player_velocity = 0
+player_acceleration = 0.5
+jump_strength = -10
+
+# Piso
+floor_height = 50
+floor_speed = 5
+floor_pieces = []
+for i in range(WIDTH // 50 + 2):
+    floor_pieces.append(pygame.Rect(i * 50, HEIGHT - floor_height, 50, floor_height))
+
+# Obstáculos
+obstacle_width = 30
+obstacle_height = 50
+obstacles = []
+
+# Monedas
+coin_radius = 15
+coins = []
+
+# Puntuación
+score = 0
+font = pygame.font.Font(None, 36)
+
+# Reloj
+clock = pygame.time.Clock()
+
+# Funciones para crear nuevos elementos
+def create_obstacle():
+    x = WIDTH
+    y = HEIGHT - floor_height - obstacle_height
+    obstacles.append(pygame.Rect(x, y, obstacle_width, obstacle_height))
+
+def create_coin():
+    x = WIDTH
+    y = random.randint(HEIGHT - floor_height - 150, HEIGHT - floor_height - coin_radius)
+    coins.append(pygame.Rect(x - coin_radius, y - coin_radius, coin_radius * 2, coin_radius * 2))
+
+# Bucle principal del juego
+running = True
+obstacle_timer = 0
+coin_timer = 0
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE and player_y == HEIGHT - player_height - floor_height:
+                player_velocity = jump_strength
+
+    # Física del salto
+    player_velocity += player_acceleration
+    player_y += player_velocity
+
+    # Evitar que el jugador caiga por debajo del piso
+    if player_y > HEIGHT - player_height - floor_height:
+        player_y = HEIGHT - player_height - floor_height
+        player_velocity = 0
+
+    # Mover el piso
+    for piece in floor_pieces:
+        piece.x -= floor_speed
+        if piece.right < 0:
+            piece.left = WIDTH
+
+    # Manejar obstáculos
+    obstacle_timer += 1
+    if obstacle_timer > 120:
+        create_obstacle()
+        obstacle_timer = 0
+
+    for obstacle in obstacles[:]:
+        obstacle.x -= floor_speed
+        if obstacle.right < 0:
+            obstacles.remove(obstacle)
+
+    # Manejar monedas
+    coin_timer += 1
+    if coin_timer > 60:
+        create_coin()
+        coin_timer = 0
+
+    for coin in coins[:]:
+        coin.x -= floor_speed
+        if coin.right < 0:
+            coins.remove(coin)
+        
+        # Colisión con el jugador
+        player_rect = pygame.Rect(player_x, player_y, player_width, player_height)
+        if player_rect.colliderect(coin):
+            coins.remove(coin)
+            score += 1
+
+    # Dibujar
+    screen.fill(WHITE)
+    pygame.draw.rect(screen, BLACK, (player_x, player_y, player_width, player_height))
+    for piece in floor_pieces:
+        pygame.draw.rect(screen, GREEN, piece)
+    for obstacle in obstacles:
+        pygame.draw.rect(screen, RED, obstacle)
+    for coin in coins:
+        pygame.draw.circle(screen, YELLOW, coin.center, coin_radius)
+
+    # Mostrar puntuación
+    score_text = font.render(f"Puntuación: {score}", True, BLACK)
+    screen.blit(score_text, (10, 10))
+
+    pygame.display.flip()
+    clock.tick(60)
+
+pygame.quit()
