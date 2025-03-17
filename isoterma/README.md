@@ -22,7 +22,7 @@ Antes de correr el script, asegúrate de ingresar la **ruta correcta** del archi
 ### **Ejecución**
 Corre el script con:
 ```bash
-python isoterma_rloes_mm_dinámico_combinado.py
+python isotera-mrr.py
 ```
 
 ### **Entradas**
