@@ -19,6 +19,9 @@ micromamba install numpy pandas xarray matplotlib proplot statsmodels
 ### **Configuración**
 Antes de correr el script, asegúrate de ingresar la **ruta correcta** del archivo NetCDF en el código.
 
+Lugar especifico donde colocar el **PATH, linea 339**: ![Ejemplo de gráfica](path.png)
+
+
 ### **Ejecución**
 Corre el script con:
 ```bash
@@ -52,6 +55,6 @@ Los valores actuales han funcionado bien, pero pueden no ser los mejores para to
 Si quieres mejorar el código, **haz un fork** y envía un **pull request**.
 
 ## **Contacto**
-Para dudas, **abre un issue** en el repositorio.
+Para dudas, **abre un issue** en el repositorio o contactame directamente a rodrigo.guerro92@gmail.com
 ```
 
