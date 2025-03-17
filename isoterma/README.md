@@ -4,6 +4,8 @@
 ## **Descripción**
 Este script procesa datos del radar **MRR** para detectar y suavizar la isoterma de **0°C** a partir de reflectividad y velocidad de caída.
 
+El código se ubica en: **isoterma/isoterma-mmr.py**
+
 ## **Requisitos**
 Necesitas **Python** y las siguientes librerías:
  
